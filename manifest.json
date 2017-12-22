@@ -1,0 +1,41 @@
+{
+    "manifest_version": 2,
+    "name": "FogMachine",
+    "description": "Working on and case management for FogBugz by CentralReach",
+    "version": "1.0",
+
+    "options_ui": {
+        "page": "options.html",
+        "chrome_style": true
+    },
+
+    "background": {
+        "scripts": [
+            "js/libs/jquery3.2.1.js",
+            "js/libs/forge0.7.1.js",
+            "js/crapi.js",
+            "js/background.js"
+        ],
+        "persistent": false
+    },
+    // "content_scripts": [
+    //     {
+    //       "matches": ["https://*.fogbugz.com/*","https://*.manuscript.com/*"],
+    //       "js": ["js/content.js"]
+    //     }
+    //   ],
+
+    "browser_action": {
+        "default_icon": "images/icon.png",
+        "default_popup": "popup.html"
+    },
+
+    "permissions": [
+        "activeTab",
+        "tabs",
+        "storage",
+        "notifications",
+        "idle",
+        "https://*.centralreach.com/*"
+    ]
+}

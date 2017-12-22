@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+	<head>
+    	<title>FogMachine</title>
+    	<script src="js/libs/forge0.7.1.js"></script>
+    	<script src="js/libs/jquery3.2.1.js"></script>
+    	<script src="js/crapi.js"></script>
+    	<script src="js/popup.js"></script>
+  	</head>
+  	<body>
+			<div>
+			<label title="see http://help.fogcreek.com/8447 for information">
+				FogBugz API Token
+			  	<input type="password" id="crfbapitoken">
+			</label>
+		</div>
+
+		<div>
+			<label title="NOT STORED - only needed if updating your FogBugz API Token above">
+			  	CrApi UserName
+			  	<input type="password" id="crcrapiuser">
+			</label>
+		</div>
+
+		<div>
+			<label title="NOT STORED - only needed if updating your FogBugz API Token above">
+				CrApi Passcode
+				<input type="password" id="crcrapipw">
+			</label>
+		</div>
+
+		<br/>
+		<div>
+			<button id="crauthsettings">Submit Credentials</button>
+		</div>
+		<div id="crsavecreds"></div>
+		<br/>
+		<br/>
+
+		<div>
+    		<button id="crsettings">Settings</button>
+    	</div>
+	</body>
+</html>	

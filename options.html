@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FogMachine Options</title>
+  <style>
+    body: { padding: 10px; }
+  </style>
+</head>
+
+<body>
+
+  <div>
+    <label>
+      <input type="checkbox" id="crautowork">
+      Auto work on viewed case
+    </label>
+  </div>
+
+  <div>
+    <label>
+      Auto work on viewed delay (seconds)
+      <input type="text" id="crworkdelay">
+    </label>
+  </div>
+
+  <div>
+    <label>
+      <input type="checkbox" id="crconfirmworking">
+      Notify when starting/stopping work on cases
+    </label>
+  </div>
+
+  <div>
+    <label>
+      Stop work when idle for (seconds)
+      <input type="text" id="cridlestop">
+    </label>
+  </div>
+
+  <div>
+    <label>
+      <input type="checkbox" id="cridleresume">
+      Resume work on previously active case when returning from idle
+    </label>
+  </div>
+
+  <div>
+    <label>
+      <input type="checkbox" id="crstoponnoncase">
+      Stop work when navigating to FogBugz non-case URL
+    </label>
+  </div>
+
+  <div>
+    <label>
+      FogBugz URL
+      <input type="text" id="crfburl">
+    </label>
+  </div>
+
+  <button id="save">Save</button>
+  <div id="status"></div>
+
+  <script src="js/options.js"></script>
+</body>
+</html>
