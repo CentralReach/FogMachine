@@ -47,7 +47,7 @@ If you have the [stop work after idle](#stop-work-when-idle-for) option set > 0,
 
 1. This works basically identical to the above without the initial warning notification (#1 from above), which would be kind of pointless while your computer is asleep...
 
-If you have the [stop work when navigating to FogBugz non-case URL](#stop-when-nav-non-case) option on and you navigate to a URL that is still part of your configured [FogBugz URL](#fogbugz-url) host (i.e. a wiki, or a case filtler listing, etc.), it will:
+If you have the [stop work when navigating to FogBugz non-case URL](#stop-work-when-navigating-to-fogbugz-non-case-url) option on and you navigate to a URL that is still part of your configured [FogBugz URL](#fogbugz-url) host (i.e. a wiki, or a case filtler listing, etc.), it will:
 
 1. Initiate a [stop work automatically](#stop-work-automatically) cycle
 
@@ -89,7 +89,7 @@ Turn this on to [auto start work](#start-work-automatically) on the case that wa
 
 Ignored if [stop work when idle](#stop-work-when-idle-for) option is <= 0.
 
-### [Stop work when navigating](#stop-work-when-navigating) to FogBugz non-case URL
+### [Stop work when navigating to FogBugz non-case URL](#stop-work-when-navigating-to-fogbugz-non-case-url)
 
 Turn this on to [auto stop work](#stop-work-automatically) when navigating to a URL that is still within your configured [FogBugz URL](#fogbugz-url) host domain but is NOT a case url, i.e.:
 
