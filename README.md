@@ -10,11 +10,11 @@ See the following for help:
 https://developer.chrome.com/extensions/getstarted#unpacked
 
 After installing:
-1. Set the [options](#-options) you prefer
-2. Enter your [FogBugz and API credentials](#-popup)
+1. Set the [options](#options) you prefer
+2. Enter your [FogBugz and API credentials](#popup)
 3. All done - stop using the FogBugz built-in working timers
 
-## [How it works](#how-it-works)
+## [How it works]
 
 The basic premise is to automatically manage what you are and are not working on for FogBugz cases simply by doing so for you as you open and/or view various cases in your browser.  Additionally it integrates with new services on CentralReach's server-side API to interact with the FogBugz API instead of doing so directly from the extension.  Why you ask?
 
