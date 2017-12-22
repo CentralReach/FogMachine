@@ -10,11 +10,11 @@ See the following for help:
 https://developer.chrome.com/extensions/getstarted#unpacked
 
 After installing:
-1. Set the [options](#options) you prefer
-2. Enter your [FogBugz and API credentials](#popup)
+1. Set the [options](#-options) you prefer
+2. Enter your [FogBugz and API credentials](#-popup)
 3. All done - stop using the FogBugz built-in working timers
 
-## [|](#how-it-works) How it works
+## [How it works](#how-it-works)
 
 The basic premise is to automatically manage what you are and are not working on for FogBugz cases simply by doing so for you as you open and/or view various cases in your browser.  Additionally it integrates with new services on CentralReach's server-side API to interact with the FogBugz API instead of doing so directly from the extension.  Why you ask?
 
@@ -28,7 +28,7 @@ Depending on how you've configured your options, it will currently:
 
 ### [Start work automatically](#how-start-work)
 
-If you have the [auto work on viewed cases](#options-autowork) option on and you view a case for your configured [FogBugz URL](#fb-url) it will:
+If you have the [auto work on viewed cases](/#options-autowork) option on and you view a case for your configured [FogBugz URL](#fb-url) it will:
 
 1. Optionally wait for a configured delay before starting work on the case (see the [auto work delay](#autowork-delay)) option
 2. Notify you that it is about to start work on a given case (for about 2-3 seconds, not currently configurable) giving you the option to cancel or allow immediately (i.e. ok or cancel)
