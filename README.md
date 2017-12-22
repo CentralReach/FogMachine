@@ -1,7 +1,7 @@
 FogMachine
 ==============================
 
-## [|](#installing) Installing
+## [Installing](#installing)
 
 Currently this is not in the chrome extension store (soon maybe).  Just clone the repo for now and load it as an upacked extension in chrome if desired (we're all developers anyhow, right?).  
 
@@ -14,7 +14,7 @@ After installing:
 2. Enter your [FogBugz and API credentials](#popup)
 3. All done - stop using the FogBugz built-in working timers
 
-## [How it works]
+## [How it works](#how-it-works)
 
 The basic premise is to automatically manage what you are and are not working on for FogBugz cases simply by doing so for you as you open and/or view various cases in your browser.  Additionally it integrates with new services on CentralReach's server-side API to interact with the FogBugz API instead of doing so directly from the extension.  Why you ask?
 
@@ -26,72 +26,72 @@ The basic premise is to automatically manage what you are and are not working on
 
 Depending on how you've configured your options, it will currently:
 
-### [Start work automatically](#how-start-work)
+### [Start work automatically](#start-work-automatically)
 
-If you have the [auto work on viewed cases](/#options-autowork) option on and you view a case for your configured [FogBugz URL](#fb-url) it will:
+If you have the [auto work on viewed cases](#auto-work-on-viewed-cases) option on and you view a case for your configured [FogBugz URL](#fogbugz-url) it will:
 
-1. Optionally wait for a configured delay before starting work on the case (see the [auto work delay](#autowork-delay)) option
+1. Optionally wait for a configured delay before starting work on the case (see the [auto work delay](#auto-work-on-viewed-cases-delay)) option
 2. Notify you that it is about to start work on a given case (for about 2-3 seconds, not currently configurable) giving you the option to cancel or allow immediately (i.e. ok or cancel)
 3. Start work on that case via the CentralReach API
-4. Optionally confirm notify (see the [notify on start/stop](#notify-start-stop) option) you that you have started work on the given case
+4. Optionally confirm notify (see the [notify on start/stop](#notify-when-start-or-stop-work) option) you that you have started work on the given case
 
-### [Stop work automatically](#how-stop-work)
+### [Stop work automatically](#stop-work-automatically)
 
-If you have the [stop work after idle](#options-stop-idle-after) option set > 0, once your computer has been idle for that number of seconds it will:
+If you have the [stop work after idle](#stop-work-when-idle-for) option set > 0, once your computer has been idle for that number of seconds it will:
 
 1. Notify you that it is about to stop work on all cases (for about 5-6 seconds, not currently configurable) giving you the option to cancel (you cannot allow immediately, i.e. ok, because as soon as the extension senses computer activity it will cancel this)
 2. Stop work on all cases via the CentralReach API
-3. Optionally confirm notify (see the [notify on start/stop](#notify-start-stop) option) you that you have stopped work on all cases
+3. Optionally confirm notify (see the [notify on start/stop](#notify-when-start-or-stop-work) option) you that you have stopped work on all cases
 
-If you have the [stop work after idle](#options-stop-idle-after) option set > 0, and your computer goes to sleep/hibernates/etc:
+If you have the [stop work after idle](#stop-work-when-idle-for) option set > 0, and your computer goes to sleep/hibernates/etc:
 
 1. This works basically identical to the above without the initial warning notification (#1 from above), which would be kind of pointless while your computer is asleep...
 
-If you have the [stop work when navigating to FogBugz non-case URL](#stop-when-nav-non-case) option on and you navigate to a URL that is still part of your configured [FogBugz URL](#fb-url) host (i.e. a wiki, or a case filtler listing, etc.), it will:
+If you have the [stop work when navigating to FogBugz non-case URL](#stop-when-nav-non-case) option on and you navigate to a URL that is still part of your configured [FogBugz URL](#fogbugz-url) host (i.e. a wiki, or a case filtler listing, etc.), it will:
 
-1. Initiate a [stop work automatically](#how-stop-work) cycle
+1. Initiate a [stop work automatically](#stop-work-automatically) cycle
 
-### [Resume work automatically](#how-resume-work)
+### [Resume work automatically](#resume-work-automatically)
 
 If you have the [resume work when returning from idle](#resume-returning-idle) option on and your computer returns from sleep and/or begins activity (i.e. you type a key, move the mouse, etc.), it will:
 
-1. Initiate a [start work automatically](#how-start-work) cycle on the case you were working on prior to the inactivity
+1. Initiate a [start work automatically](#start-work-automatically) cycle on the case you were working on prior to the inactivity
 
 
 
-## [|](#options) Options
+## [Options](#options)
 
-### [Auto work on viewed cases](#options-autowork) 
+### [Auto work on viewed cases](#auto-work-on-viewed-cases) 
 
-Turn this option on to [automatically start work](#how-start-work) on any case you open or view in any tab in chrome. This basically listens for both the [onActivated](https://developer.chrome.com/extensions/tabs#event-onActivated) and [onUpdated](https://developer.chrome.com/extensions/tabs#event-onUpdated) chrome tab events, and will auto-work on any case found in the updated and/or activated tabs.
+Turn this option on to [automatically start work](#start-work-automatically) on any case you open or view in any tab in chrome. This basically listens for both the [onActivated](https://developer.chrome.com/extensions/tabs#event-onActivated) and [onUpdated](https://developer.chrome.com/extensions/tabs#event-onUpdated) chrome tab events, and will auto-work on any case found in the updated and/or activated tabs.
 
-### [Auto work on viewed cases delay](#autowork-delay)
+### [Auto work on viewed cases delay](#auto-work-on-viewed-cases-delay)
 
 In seconds.
 
-Delay this number of seconds at the start of the [auto start work](#how-start-work) cycle. Helpful if you often quickly change tabs to reference notes in subcases, etc. of the case you're actually working on.
+Delay this number of seconds at the start of the [auto start work](#start-work-automatically) cycle. Helpful if you often quickly change tabs to reference notes in subcases, etc. of the case you're actually working on.
 
-### [Notify when start/stop work on cases](#notify-start-stop)
+### [Notify when start or stop work](#notify-when-start-or-stop-work)
 
-Turn this on to get a confirmation notification at the end of the [auto start work](#how-start-work) and [auto stop work](#how-stop-work) cycles that you indeed have started or stopped case work.
+Turn this on to get a confirmation notification at the end of the [auto start work](#start-work-automatically) and [auto stop work](#stop-work-automatically) cycles that you indeed have started or stopped case work.
 
-### [Stop work when idle for (seconds)](#options-stop-idle-after)
+### [Stop work when idle for](#stop-work-when-idle-for)
 
-In seconds.  Minimum value supported by chrome is 15 seconds, which will be used if you enter something > 0 and < 15.  Set to 0 or negative to disable [auto stop work](#how-stop-work) cycles.
+In seconds.  Minimum value supported by chrome is 15 seconds, which will be used if you enter something > 0 and < 15.  Set to 0 or negative to disable [auto stop work](#stop-work-automatically) cycles.
 
-Number of seconds your computer should be idle before [auto stop work](#how-stop-work) cycle begins.
+Number of seconds your computer should be idle before [auto stop work](#stop-work-automatically) cycle begins.
 
 If this is set > 0 it also always includes handling of computer sleep/hibernate as well.
 
-### [Resume work when returning from idle](#resume-returning-idle) (on previously active case)
+### [Resume work when returning from idle](#resume-work-when-returning-from-idle) (on previously active case)
 
-Turn this on to [auto start work](#how-start-work) on the case that was active prior to an [auto stop work](#how-stop-work) event.
+Turn this on to [auto start work](#start-work-automatically) on the case that was active prior to an [auto stop work](#stop-work-automatically) event.
 
-Ignored if [stop work when idle](#options-stop-idle-after) option is <= 0.
+Ignored if [stop work when idle](#stop-work-when-idle-for) option is <= 0.
 
-### [Stop work when navigating to FogBugz non-case URL](#stop-when-nav-non-case) 
+### [Stop work when navigating](#stop-work-when-navigating) to FogBugz non-case URL
 
-Turn this on to [auto stop work](#how-stop-work) when navigating to a URL that is still within your configured [FogBugz URL](#fb-url) host domain but is NOT a case url, i.e.:
+Turn this on to [auto stop work](#stop-work-automatically) when navigating to a URL that is still within your configured [FogBugz URL](#fogbugz-url) host domain but is NOT a case url, i.e.:
 
 * Case listings (e.g. myfbsubdomain.fogbugz.com/f/filters/...)
 * Case outlines
@@ -99,23 +99,23 @@ Turn this on to [auto stop work](#how-stop-work) when navigating to a URL that i
 * Wikis
 * etc.
 
-### [FogBugz URL](#fb-url) 
+### [FogBugz URL](#fogbugz-url) 
 
 Your FogBugz URL.
 
 
 
-## [|](#popup) Extension Popup
+## [Popup](#popup)
 
 Here you can enter or change the credentials you use to link to FogBugz and the CR API.  You only need to enter these once per browser instance you plan to use (we do not sync credentials with the extension purposely for now).
 
-#### [FogBugz API Token](#popup-fb-token)
+#### [FogBugz API Token](#fogbugz-api-token)
 
 See the following FB article for information on how to get an API token for your user:
 
 http://help.fogcreek.com/8447
 
-#### [CentralReach Api User and Password](#popup-cr-creds)
+#### [CentralReach Api Credentials](#centralreach-api-credentials)
 
 The Username and Password for the CR account to which the FB token and any future integrations with CR would be effected within.  Typically this would be your personal CR organization credentials.
 
