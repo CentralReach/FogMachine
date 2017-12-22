@@ -53,7 +53,7 @@ If you have the [stop work when navigating to FogBugz non-case URL](#stop-work-w
 
 ### [Resume work automatically](#resume-work-automatically)
 
-If you have the [resume work when returning from idle](#resume-returning-idle) option on and your computer returns from sleep and/or begins activity (i.e. you type a key, move the mouse, etc.), it will:
+If you have the [resume work when returning from idle](#resume-work-when-returning-from-idle) option on and your computer returns from sleep and/or begins activity (i.e. you type a key, move the mouse, etc.), it will:
 
 1. Initiate a [start work automatically](#start-work-automatically) cycle on the case you were working on prior to the inactivity
 
@@ -83,7 +83,7 @@ Number of seconds your computer should be idle before [auto stop work](#stop-wor
 
 If this is set > 0 it also always includes handling of computer sleep/hibernate as well.
 
-### [Resume work when returning from idle](#resume-work-when-returning-from-idle) (on previously active case)
+### [Resume work when returning from idle](#resume-work-when-returning-from-idle)
 
 Turn this on to [auto start work](#start-work-automatically) on the case that was active prior to an [auto stop work](#stop-work-automatically) event.
 
