@@ -98,7 +98,9 @@ function processTab(tab) {
 		if (!items.autoWork) {
 			return;
 		}
-		if (tab.url.indexOf(items.fbUrl) < 0) {
+		if ( (tab.url.indexOf(items.fbUrl) < 0) &&
+			 (tab.url.replace('manuscript.com', 'fogbugz.com').indexOf(items.fbUrl) < 0) &&
+			 (tab.url.replace('fogbugz.com', 'manuscript.com').indexOf(items.fbUrl) < 0) ) {
 			return;
 		}
 
