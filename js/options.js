@@ -5,7 +5,7 @@ function saveOptions() {
     var workDelay = document.getElementById('crworkdelay').value;
     var confirmWorkingOn = document.getElementById('crconfirmworking').checked;
     var idleStopWork = document.getElementById('cridlestop').value;
-    var resumeWorkAfterIdle = document.getElementById('cridleresume').value;
+    var resumeWorkAfterIdle = document.getElementById('cridleresume').checked;
     var stopOnFbNonCaseUrl = document.getElementById('crstoponnoncase').checked;
     
     chrome.storage.sync.set({
@@ -55,9 +55,8 @@ function restoreOptions() {
         document.getElementById('crworkdelay').value = items.workOnDelay;
         document.getElementById('crconfirmworking').checked = items.confirmWorkingOn;
         document.getElementById('cridlestop').value = items.idleStopWork;
+        document.getElementById('cridleresume').checked = items.idleResumeWork;
         document.getElementById('crstoponnoncase').checked = items.stopOnFbNonCaseUrl;
-        document.getElementById('crfbapitoken').value = items.fbApiToken;
-        document.getElementById('crcrapitoken').value = items.crApiToken;
     });
 }
 
