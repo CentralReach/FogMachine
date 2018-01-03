@@ -3,7 +3,13 @@ FogMachine
 
 ## [Installing](#installing)
 
-Currently this is not in the chrome extension store (soon maybe).  Just clone the repo for now and load it as an upacked extension in chrome if desired (we're all developers anyhow, right?).  
+Now available in the chrome web store here:
+
+https://chrome.google.com/webstore/detail/jfmcegeknnnnnmjhcnhljhiinfonmfid
+
+Not currently marked publicly available yet (i.e. you cannot find it by searching the store, only by following the link above).  Not likely to do so until or unless we move and/or allow public signup into the CentralReach API portion of the extension.
+
+If you prefer, you can also simply clone this repo and load it as an upacked extension, which requires running your extensions in developer mode (we're all developers anyhow, right?).  
 
 See the following for help:
 
@@ -35,6 +41,8 @@ If you have the [auto work on viewed cases](#auto-work-on-viewed-cases) option o
 3. Start work on that case via the CentralReach API
 4. Optionally confirm notify (see the [notify on start/stop](#notify-when-start-or-stop-work) option) you that you have started work on the given case
 
+Note that opening a new case in a non-active tab (i.e. right-click and open in new tab without actually viewing the case) will NOT trigger starting of work on that case...until you actually look at it.  This is by design.
+
 ### [Stop work automatically](#stop-work-automatically)
 
 If you have the [stop work after idle](#stop-work-when-idle-for) option set > 0, once your computer has been idle for that number of seconds it will:
@@ -57,6 +65,7 @@ If you have the [resume work when returning from idle](#resume-work-when-returni
 
 1. Initiate a [start work automatically](#start-work-automatically) cycle on the case you were working on prior to the inactivity
 
+Note that the resume work functionality will only auto-resume work on your last active case if the tab that the case was opened in is still open and active (doesn't have to be visible, or highlighted/viewed, etc...just has to still be open on your machine).  This is by design.
 
 
 ## [Options](#options)
@@ -107,7 +116,7 @@ Your FogBugz URL.
 
 ## [Popup](#popup)
 
-Here you can enter or change the credentials you use to link to FogBugz and the CR API.  You only need to enter these once per browser instance you plan to use (we do not sync credentials with the extension purposely for now).
+Here you can stop work, start/resume work on your last active case, and enter or change the credentials you use to link to FogBugz and the CR API.  You only need to enter these once per browser instance you plan to use (we do not sync credentials with the extension purposely for now).
 
 #### [FogBugz API Token](#fogbugz-api-token)
 
