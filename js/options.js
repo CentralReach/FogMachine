@@ -42,7 +42,7 @@ function restoreOptions() {
     chrome.storage.sync.get({
         fbUrl: 'https://centralreach.fogbugz.com',
         autoWork: true,
-        workOnDelay: 3
+        workOnDelay: 3,
         confirmWorkingOn: false,
         idleStopWork: 300,
         idleResumeWork: true,

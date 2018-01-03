@@ -47,12 +47,16 @@ chrome.tabs.onActivated.addListener(function(info) {
 
 	setTimeout(function() {
 		chrome.tabs.get(activatedTabId, function(tab) {
+			if (chrome.runtime.lastError) {
+				return;
+			}
+
 			// If the tab exists and it is still active in it's window...
 			if (tab && tab.active) {
 				processTab(tab);
 			}
-		});		
-	}, 2500);
+		});
+	}, 750);
 
 });
 
@@ -190,12 +194,14 @@ function startWorkOnLastAsync() {
 	}, function(r) {
 		if (r.lastCaseNumber && r.lastCaseTabId && r.lastCaseNumber != r.currentlyWorkingOn) {
 			chrome.tabs.get(r.lastCaseTabId, function(tab) {
-				if (tab) {
-					var caseInfo = getCaseInfoFromUrls(tab.url, r.fbUrl);
+				if (chrome.runtime.lastError || !tab) {
+					return;
+				}
 
-					if (caseInfo.caseNumber && caseInfo.caseNumber == r.lastCaseNumber) {
-						doUpdateWorkingOn(r.lastCaseNumber, true, true);
-					}
+				var caseInfo = getCaseInfoFromUrls(tab.url, r.fbUrl);
+
+				if (caseInfo.caseNumber && caseInfo.caseNumber == r.lastCaseNumber) {
+					doUpdateWorkingOn(r.lastCaseNumber, true, true);
 				}
 			});
 		}
@@ -281,7 +287,7 @@ function doUpdateWorkingOn(caseNumber, force, noConfirm) {
 								type: 'basic',
 								iconUrl: 'images/notify.png',
 								title: `FAILED to start work on case ${caseNumber}`,
-								message: `Could not successfully start work - [${x}]`,
+								message: `Could not successfully start work on case ${caseNumber}`,
 								buttons: [{
 						            title: 'Ok'
 						        }]

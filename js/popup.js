@@ -28,28 +28,38 @@ document.addEventListener('DOMContentLoaded', function() {
 		var crApiPw = document.getElementById('crcrapipw').value;
 		var credstatus = document.getElementById('crsavecredsstatus');
 
-		if (fbApiToken && crApiUser && crApiPw) {
+		if (crApiUser && crApiPw) {
 			crApi.authenticate(crApiUser, crApiPw)
 				.then(ar => {
-						return crApi.setExternalCredentials(fbApiToken, 'FogBugz');
+						if (fbApiToken) {
+							return crApi.setExternalCredentials(fbApiToken, 'FogBugz');
+						} else {
+							return {
+								Result: 'Ok',
+								Failed: false
+							};
+						}
 					})
-				.then(function(r) {
-						chrome.storage.local.set({
-							fbApiToken: fbApiToken
-						});
+				.then(r =>
+						if (fbApiToken) {
+							chrome.storage.local.set({
+								fbApiToken: fbApiToken
+							});
+						}
 						
 						credstatus.textContent = 'Credentials saved.';
 
 						return true;
 					})
 				.catch(x => {
-						credstatus.textContent = `Error trying to authenticate and store tokens - [${x}]`;
+						credstatus.textContent = `Error trying to authenticate and/or store tokens - [${x}]`;
+						console.error(x);
 						return false;
 					});
 			
 
 		} else {			
-			credstatus.textContent = 'Cannot update credentials - you must enter all 3 of above.';
+			credstatus.textContent = 'Cannot update credentials - you must enter at least a CrApi user and pw.';
 		}
 		
 	}, false);
