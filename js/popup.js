@@ -7,14 +7,14 @@ document.addEventListener('DOMContentLoaded', function() {
 	stopWorkButton.addEventListener('click', function() {
 		chrome.runtime.sendMessage({ action: 'crStopAllWork'}, function(response) {
 			var workstatus = document.getElementById('crstartstopworkstatus');
-			workstatus.textContent = response.success ? 'Stopped work successfully' : 'Error trying to stop work';
+			workstatus.textContent = 'Stopping work on all cases';
 		});
 	}, false);
 	
 	startWorkLastButton.addEventListener('click', function() {
 		chrome.runtime.sendMessage({ action: 'crStartWorkLast'}, function(response) {
 			var workstatus = document.getElementById('crstartstopworkstatus');
-			workstatus.textContent = 'Attempting to resume work on previous case';
+			workstatus.textContent = 'Resuming work on previous case';
 		});
 	}, false);
 
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
 							};
 						}
 					})
-				.then(r =>
+				.then(r => {
 						if (fbApiToken) {
 							chrome.storage.local.set({
 								fbApiToken: fbApiToken

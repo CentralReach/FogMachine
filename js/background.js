@@ -8,8 +8,8 @@ chrome.storage.sync.get({
 
 chrome.runtime.onMessage.addListener(function(request, sender, response) {
         if (request.action == 'crStopAllWork') {
-        	var success = doStopWork(true);
-        	response({success: success});
+        	doStopWork(true);
+        	response();
         } else if (request.action == 'crStartWorkLast') {
         	startWorkOnLastAsync();
         	response();
