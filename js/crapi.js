@@ -93,7 +93,8 @@ class CrApi {
 
   	crclx(method, x, msg) {
   		if (this.debug) {
-  			console.log(`CrApi.${method} FAILED :: ${msg || 'N/A'} :: ${x || 'N/A'}`);
+  			console.error(`CrApi.${method} FAILED :: ${msg || 'N/A'}`);
+  			console.error(x);
   		}
 
   		throw new Error(`Exception in CrApi.${method} :: ${x}`);
@@ -159,7 +160,7 @@ class CrApi {
 	  			if (!u && !p) {
 	  				this.crcl('authenticate', null, 'no user or pw');
 
-	  				invalidateAuthentication();
+	  				this.invalidateAuthentication();
 
 	  				throw new Error('Cannot authenticate - no credentials found');
 			  	}
@@ -167,7 +168,7 @@ class CrApi {
 			  	if (this.badAuthAttempts > 3) {
 			  		this.crcl('authenticate', null, 'exceeded bad auth attempts');
 
-			  		invalidateAuthentication();
+			  		this.invalidateAuthentication();
 			  		
 			  		throw new Error('Cannot authenticate - too many invalid attempts, re-enter your credentials');
 			  	}
@@ -249,7 +250,7 @@ class CrApi {
 					this.badAuthAttempts++;
 
 					if (this.badAuthAttempts > 3) {
-						invalidateAuthentication();
+						this.invalidateAuthentication();
 					}
 		  		}
 
