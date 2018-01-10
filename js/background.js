@@ -95,7 +95,7 @@ chrome.notifications.onClosed.addListener(function(notificationId, byUser) {
 });
 
 function isCaseNumber(element) {
-	 return !isNaN(element) && isFinite(element);
+	 return element && !isNaN(element) && isFinite(element) && element > 0;
 }
 
 function getCaseInfoFromUrls(url, fbUrl) {
@@ -168,7 +168,13 @@ function processTab(tab) {
 						startUpdateWorkingOn(caseInfo.caseNumber);
 					} else {
 						setTimeout(function() {
-							startUpdateWorkingOn(caseInfo.caseNumber);
+							chrome.tabs.get(tabId, function(tab) {
+								if (chrome.runtime.lastError || !tab) {
+									return;
+								}
+
+								startUpdateWorkingOn(caseInfo.caseNumber);
+							});
 						}, wait);
 				    }
 				}
@@ -209,15 +215,18 @@ function startWorkOnLastAsync() {
 }
 
 function startUpdateWorkingOn(caseNumber) {
-	if (!navigator.onLine) {
+	if (!navigator.onLine || !isCaseNumber(caseNumber)) {
 		return;
 	}
 
 	// If this case is still the same one the user is viewing/last viewed since the delay started, update working on
 	chrome.storage.local.get({
-		lastCaseNumber: ''
+		lastCaseNumber: '',
+		currentlyWorkingOn: '',
+		lastCaseTabId: '',
+		fbUrl: 'https://centralreach.fogbugz.com'
 	}, function(r) {
-		if (r.lastCaseNumber == caseNumber) {
+		if (r.lastCaseNumber && r.lastCaseTabId && r.lastCaseNumber != r.currentlyWorkingOn && r.lastCaseNumber == caseNumber) {
 			// Notify that this is happening...
 			chrome.notifications.create(caseNumber, {
 				type: 'basic',
@@ -231,7 +240,20 @@ function startUpdateWorkingOn(caseNumber) {
 		        }]
 			}, function(notificationId) {
 				setTimeout(function() { 
-					doUpdateWorkingOn(notificationId);
+					chrome.tabs.get(r.lastCaseTabId, function(tab) {
+						if (chrome.runtime.lastError || !tab) {
+							chrome.notifications.clear(notificationId);
+							return;
+						}
+
+						var caseInfo = getCaseInfoFromUrls(tab.url, r.fbUrl);
+
+						if (caseInfo.caseNumber && caseInfo.caseNumber == notificationId) {
+							doUpdateWorkingOn(notificationId);
+						} else {
+							chrome.notifications.clear(notificationId);
+						}
+					});
 				}, 2500);
 			});
 		}
