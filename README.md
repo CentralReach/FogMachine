@@ -34,7 +34,14 @@ Depending on how you've configured your options, it will currently:
 
 ### [Start work automatically](#start-work-automatically)
 
-If you have the [auto work on viewed cases](#auto-work-on-viewed-cases) option on and you view a case for your configured [FogBugz URL](#fogbugz-url) it will:
+If you have the [auto work on viewed cases](#auto-work-on-viewed-cases) option on and you do any of the following:
+
+1. View a case for your configured [FogBugz URL](#fogbugz-url)
+2. View a PR at your [GitHub URL](#github-url) with a branch reference that includes a case
+3. Join a meeting in your [Conference URL](#conference-url) that has a URL that includes a case nubmer
+4. Visit a URL that you have mapped to a case in your [Static Case Map](#static-case-map) 
+
+Then the extension will:
 
 1. Optionally wait for a configured delay before starting work on the case (see the [auto work delay](#auto-work-on-viewed-cases-delay)) option
 2. Notify you that it is about to start work on a given case (for about 2-3 seconds, not currently configurable) giving you the option to cancel or allow immediately (i.e. ok or cancel)
@@ -112,6 +119,17 @@ Turn this on to [auto stop work](#stop-work-automatically) when navigating to a 
 
 Your FogBugz URL.
 
+### [GitHub URL](#github-url) 
+
+Your GitHub URL.  If you want work to automatically start against a case that is contained within either the source or target PR branch names (if the target has a case number in it, that takes priority), set this to a valid GH url.
+
+### [Conference URL](#conference-url) 
+
+Your video/conference call site URL.  If the first URL segment after this root URL contains something we can assume to be a valid FB case number, we'll automatically work against that case when you join the conference in your browser.
+
+### [Static Case Map](#static-case-map) 
+
+A simple JSON key/value pair of static URLs and the case you want to track time against when/if you visit the given URL in your browser.
 
 
 ## [Popup](#popup)

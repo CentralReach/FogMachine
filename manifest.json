@@ -1,5 +1,5 @@
 {
-    "version": "1.0.6",
+    "version": "1.1.1",
 
     "name": "FogMachine by CentralReach",
     "short_name": "FogMachine",
@@ -27,6 +27,16 @@
         "persistent": false
     },
 
+    "content_scripts": [
+        {
+            "matches": ["https://github.centralreach.com/*", "https://github.com/*"],
+            "js": [
+                "js/content.js",
+                "js/libs/jquery3.2.1.js"
+            ]
+        }
+    ],
+
     "browser_action": {
         "default_icon": "images/icon.png",
         "default_popup": "popup.html"
@@ -38,6 +48,8 @@
         "storage",
         "notifications",
         "idle",
-        "https://*.centralreach.com/*"
+        "https://*.centralreach.com/*",
+        "https://github.centralreach.com/*/pull/*",
+        "https://github.com/*/pull/*"
     ]
 }

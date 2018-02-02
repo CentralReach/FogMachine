@@ -7,13 +7,13 @@ chrome.storage.sync.get({
 });
 
 chrome.runtime.onMessage.addListener(function(request, sender, response) {
-        if (request.action == 'crStopAllWork') {
-        	doStopWork(true);
-        	response();
-        } else if (request.action == 'crStartWorkLast') {
-        	startWorkOnLastAsync();
-        	response();
-        }
+	if (request.action == 'crStopAllWork') {
+		doStopWork(true);
+		response();
+	} else if (request.action == 'crStartWorkLast') {
+		startWorkOnLastAsync();
+		response();
+	}
 });
 
 window.addEventListener('online', function(e) {
@@ -98,39 +98,119 @@ function isCaseNumber(element) {
 	 return element && !isNaN(element) && isFinite(element) && element > 0;
 }
 
-function getCaseInfoFromUrls(url, fbUrl) {
-	var caseInfo = {
-		caseNumber: '',
-		isFbUrl: false
-	};
+function getCaseInfoFromUrls(tab, urls, callback) {
+	if (!tab || !tab.url || !urls) {
+		callback(tab, {
+			caseNumber: '',
+			isFbUrl: false,
+			isGhUrl: false,
+			isConfUrl: false,
+			isStaticUrl: false
+		}, urls);
 
-	if (!url || !fbUrl) {
-		return caseInfo;
+		return;
 	}
 
-	if ( (url.indexOf(fbUrl) < 0) &&
-		 (url.replace('manuscript.com', 'fogbugz.com').indexOf(fbUrl) < 0) &&
-		 (url.replace('fogbugz.com', 'manuscript.com').indexOf(fbUrl) < 0) ) {
-		return caseInfo;
+	var url = tab.url;
+
+	// First see if this url is statically mapped
+	if (urls.crUrlCaseMap) {
+		var mapObj = JSON.parse(urls.crUrlCaseMap);
+		var urlMapCase = mapObj ? mapObj[url] : 0;
+
+		if (isCaseNumber(urlMapCase)) {		
+			callback(tab, {
+						caseNumber: urlMapCase.toString(),
+						isFbUrl: false,
+						isGhUrl: false,
+						isConfUrl: false,
+						isStaticUrl: true
+					}, urls);
+
+			return;
+		}
 	}
 
-	caseInfo.isFbUrl = true;
+	if ( (url.indexOf(urls.fbUrl) >= 0) ||
+		 (url.replace('manuscript.com', 'fogbugz.com').indexOf(urls.fbUrl) >= 0) ||
+		 (url.replace('fogbugz.com', 'manuscript.com').indexOf(urls.fbUrl) >= 0) ) {
+		// FB Url...process it and return case info...
+		var caseInfo = {
+			caseNumber: '',
+			isFbUrl: false,
+			isGhUrl: false,
+			isConfUrl: false,
+			isStaticUrl: false
+		};
 
-	var isCasesUrl = false;
-	var urlSegments = url.split('/');
+		caseInfo.isFbUrl = true;
 
-	urlSegments.forEach(function(e) {
-		if (e) {
-			if (isCasesUrl && isCaseNumber(e)) {
-				caseInfo.caseNumber = e; 
+		var isCasesUrl = false;
+		var urlSegments = url.split('/');
+
+		urlSegments.forEach(function(e) {
+			if (e) {
+				if (isCasesUrl && isCaseNumber(e)) {
+					caseInfo.caseNumber = e; 
+				} 
+				else if (e == 'cases') { 
+					isCasesUrl = true; 
+				} 
 			} 
-			else if (e == 'cases') { 
-				isCasesUrl = true; 
-			} 
-		} 
-	});
+		});
 
-	return caseInfo;
+		callback(tab, caseInfo, urls);
+
+	} else if (url.indexOf(urls.ghUrl) >= 0) {
+		// GH url, that is all we do for these...
+		chrome.tabs.sendMessage(tab.id, { action: 'crGetPrCommitRefs' }, function(ghPrCase) {
+			var ghCaseInfo = {
+				caseNumber: '',
+				isFbUrl: false,
+				isGhUrl: true,
+				isConfUrl: false,
+				isStaticUrl: false
+			};
+
+			if (isCaseNumber(ghPrCase)) {
+				ghCaseInfo.caseNumber = ghPrCase;
+			}
+
+			callback(tab, ghCaseInfo, urls);
+		});
+
+	} else if (url.indexOf(urls.confUrl) >= 0) {
+		// Conf url
+		var firstSegment = url.replace(urls.confUrl, '').split('/').find(function(e) { return e; });
+		var confCaseNum = 0;
+
+		if (firstSegment) {
+			// Find basically a case number in the first segment
+			var mrx = /[^0-9]*([0-9]+)[^0-9]*/;
+			var cnMatch = mrx.exec(firstSegment);
+
+			if (cnMatch && cnMatch[1]) {
+				confCaseNum = cnMatch[1];
+			}
+		}
+		
+		callback(tab, {
+					caseNumber: confCaseNum,
+					isFbUrl: false,
+					isGhUrl: false,
+					isConfUrl: true,
+					isStaticUrl: false
+				}, urls);
+
+	} else {
+		callback(tab, {
+			caseNumber: '',
+			isFbUrl: false,
+			isGhUrl: false,
+			isConfUrl: false,
+			isStaticUrl: false
+		}, urls);
+	}
 }
 
 function processTab(tab) {
@@ -138,52 +218,56 @@ function processTab(tab) {
 	    autoWork: true,
 	    workOnDelay: 5,
 	    fbUrl: 'https://centralreach.fogbugz.com',
-	    stopOnFbNonCaseUrl: false
+	    ghUrl: 'https://github.centralreach.com',
+	    confUrl: 'https://centralreach.highfive.com',
+	    stopOnFbNonCaseUrl: false,
+	    crUrlCaseMap: ''
 	}, function(items) {
 		if (!items.autoWork) {
 			return;
 		}
 
-		var caseInfo = getCaseInfoFromUrls(tab.url, items.fbUrl);
+		getCaseInfoFromUrls(tab, items, doProcessTab);
+    });
+}
 
-		if (!caseInfo.isFbUrl) {
-			return;
-		}
-
+function doProcessTab(tab, caseInfo, items) {
+	if (!tab || !caseInfo || (!caseInfo.isFbUrl && !caseInfo.isGhUrl && !caseInfo.isConfUrl && !caseInfo.isStaticUrl)) { 
+		return;
+	}
+	
+	if (caseInfo.caseNumber) {
 		var wait = (items.workOnDelay * 1000);
 		var tabId = tab.id;
 
-		if (caseInfo.caseNumber) {
-			
-			chrome.storage.local.get({
-				lastCaseNumber: ''
-			}, function(r) {
-				if (r.lastCaseNumber != caseInfo.caseNumber) {
-					chrome.storage.local.set({
-						lastCaseNumber: caseInfo.caseNumber,
-						lastCaseTabId: tabId
-					});
+		chrome.storage.local.get({
+			lastCaseNumber: ''
+		}, function(r) {
+			if (r.lastCaseNumber != caseInfo.caseNumber) {
+				chrome.storage.local.set({
+					lastCaseNumber: caseInfo.caseNumber,
+					lastCaseTabId: tabId
+				});
 
-					if (wait <= 0) {
-						startUpdateWorkingOn(caseInfo.caseNumber);
-					} else {
-						setTimeout(function() {
-							chrome.tabs.get(tabId, function(tab) {
-								if (chrome.runtime.lastError || !tab) {
-									return;
-								}
+				if (wait <= 0) {
+					startUpdateWorkingOn(caseInfo.caseNumber);
+				} else {
+					setTimeout(function() {
+						chrome.tabs.get(tabId, function(tab) {
+							if (chrome.runtime.lastError || !tab) {
+								return;
+							}
 
-								startUpdateWorkingOn(caseInfo.caseNumber);
-							});
-						}, wait);
-				    }
-				}
-			});
+							startUpdateWorkingOn(caseInfo.caseNumber);
+						});
+					}, wait);
+			    }
+			}
+		});
 
-		} else if (items.stopOnFbNonCaseUrl) {
-			stopWorkingOn("The 'Stop work when navigating to FogBugz non-case URL' option is on");
-		}
-    });
+	} else if (caseInfo.isFbUrl && items.stopOnFbNonCaseUrl) {
+		stopWorkingOn("The 'Stop work when navigating to FogBugz non-case URL' option is on");
+	}
 }
 
 function startWorkOnLastAsync() {
@@ -195,8 +279,7 @@ function startWorkOnLastAsync() {
 	chrome.storage.local.get({
 		lastCaseNumber: '',
 		currentlyWorkingOn: '',
-		lastCaseTabId: '',
-		fbUrl: 'https://centralreach.fogbugz.com'
+		lastCaseTabId: ''
 	}, function(r) {
 		if (r.lastCaseNumber && r.lastCaseTabId && r.lastCaseNumber != r.currentlyWorkingOn) {
 			chrome.tabs.get(r.lastCaseTabId, function(tab) {
@@ -204,11 +287,21 @@ function startWorkOnLastAsync() {
 					return;
 				}
 
-				var caseInfo = getCaseInfoFromUrls(tab.url, r.fbUrl);
+				chrome.storage.sync.get({
+					fbUrl: 'https://centralreach.fogbugz.com',
+					ghUrl: 'https://github.centralreach.com',
+					confUrl: 'https://centralreach.highfive.com',
+				    crUrlCaseMap: '',
+				    lastCaseNumber: lastCaseNumber
+				}, function(si) {
 
-				if (caseInfo.caseNumber && caseInfo.caseNumber == r.lastCaseNumber) {
-					doUpdateWorkingOn(r.lastCaseNumber, true, true);
-				}
+					getCaseInfoFromUrls(tab, si, function(t, c, o) {
+						if (c.caseNumber && c.caseNumber == o.lastCaseNumber) {
+							doUpdateWorkingOn(o.lastCaseNumber, true, true);
+						}
+					});
+				});
+
 			});
 		}
 	});
@@ -223,8 +316,7 @@ function startUpdateWorkingOn(caseNumber) {
 	chrome.storage.local.get({
 		lastCaseNumber: '',
 		currentlyWorkingOn: '',
-		lastCaseTabId: '',
-		fbUrl: 'https://centralreach.fogbugz.com'
+		lastCaseTabId: ''
 	}, function(r) {
 		if (r.lastCaseNumber && r.lastCaseTabId && r.lastCaseNumber != r.currentlyWorkingOn && r.lastCaseNumber == caseNumber) {
 			// Notify that this is happening...
@@ -246,13 +338,21 @@ function startUpdateWorkingOn(caseNumber) {
 							return;
 						}
 
-						var caseInfo = getCaseInfoFromUrls(tab.url, r.fbUrl);
+						chrome.storage.sync.get({
+							fbUrl: 'https://centralreach.fogbugz.com',
+							ghUrl: 'https://github.centralreach.com',
+							confUrl: 'https://centralreach.highfive.com',
+						    crUrlCaseMap: ''
+						}, function(si) {
+							getCaseInfoFromUrls(tab, si, function(t, c, o) {
+								if (c.caseNumber && c.caseNumber == notificationId) {
+									doUpdateWorkingOn(notificationId);
+								} else {
+									chrome.notifications.clear(notificationId);
+								}
+							});
+						});
 
-						if (caseInfo.caseNumber && caseInfo.caseNumber == notificationId) {
-							doUpdateWorkingOn(notificationId);
-						} else {
-							chrome.notifications.clear(notificationId);
-						}
 					});
 				}, 2500);
 			});
