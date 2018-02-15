@@ -1,35 +1,81 @@
 <!doctype html>
 <html>
-	<head>
-    	<title>FogMachine</title>
-    	<script src="js/libs/forge0.7.1.js"></script>
-    	<script src="js/libs/jquery3.2.1.js"></script>
-    	<script src="js/crapi.js"></script>
-    	<script src="js/popup.js"></script>
-  	</head>
-  	<body>
-		<div>
-    		<button id="crstopwork">Stop Work on All</button>
-    	</div>
 
-		<div>
-    		<button id="crstartworklast">Start Work on Last</button>
-    	</div>
-    	<div id="crstartstopworkstatus"></div>
-		<br/>
-		<br/>
+<head>
+	<title>FogMachine</title>
+	<script src="js/libs/forge0.7.1.js"></script>
+	<script src="js/libs/jquery3.2.1.js"></script>
+	<script src="js/crapi.js"></script>
+	<script src="js/popup.js"></script>
+</head>
+<style type="text/css">
+	body {
+		margin: 0;
+		min-width: 200px;
+		padding: 15px;
+	}
 
-  		<div>
-			<label title="see http://help.fogcreek.com/8447 for information">
+	.section {
+		margin: 8px 0px 15px 0px;
+	}
+
+	body .section:first-child {
+		margin-top: 0px;
+	}
+
+	body .section:last-child {
+		margin-bottom: 0px;
+	}
+
+	.section .title {
+		font-weight: 600;
+	}
+
+	.sub-section {
+		margin-top: 8px;
+	}
+
+	select option {
+		-webkit-appearance: none;
+		padding: 5px;
+	}
+
+	#cancelCredsUpdate {
+		margin-left: 8px;
+		display: none;
+	}
+
+	#credentialsSaved {
+		display: none;
+	}
+</style>
+
+<body>
+	<div id="caseActions" class="section">
+		<div class="title">Quick Start</div>
+		<select id="quickPicker">
+			<option value="0">Pick to Switch</option>
+			<option value "-1">Most Recent</option>
+		</select>
+		<div class="sub-section">
+			<a id="crstopwork" href="#">Stop Working</a>
+		</div>
+		<div id="crstartstopworkstatus"></div>
+	</div>
+
+	<div id="credentialsInputForm" class="section">
+		<div>
+			<label>
 				FogBugz API Token
-			  	<input type="password" id="crfbapitoken">
+				<nobr>(<a href="http://help.fogcreek.com/8447" target="_blank">Info</a>)</nobr>
+				<input type="password" id="crfbapitoken">
 			</label>
 		</div>
 
 		<div>
 			<label title="NOT STORED - only needed if updating your FogBugz API Token above">
-			  	CrApi UserName
-			  	<input type="password" id="crcrapiuser">
+				CrApi UserName
+				<input type="password" id="crcrapiuser">
 			</label>
 		</div>
 
@@ -39,17 +85,23 @@
 				<input type="password" id="crcrapipw">
 			</label>
 		</div>
-
-		<br/>
 		<div>
 			<button id="crauthsettings">Submit Credentials</button>
+			<a id="cancelCredsUpdate" href="#">Cancel</a>
 		</div>
 		<div id="crsavecredsstatus"></div>
-		<br/>
-		<br/>
+	</div>
 
+	<div id="credentialsSaved" class="section">
+		<div>Your credentials are on file.</div>
 		<div>
-    		<button id="crsettings">Settings</button>
-    	</div>
-	</body>
-</html>	
+			<a id="updateCredsLink" href="#">Update Credentials</a>
+		</div>
+	</div>
+
+	<div class="section">
+		<button id="crsettings">Settings</button>
+	</div>
+</body>
+
+</html>
