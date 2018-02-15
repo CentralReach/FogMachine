@@ -11,16 +11,30 @@ document.addEventListener(
     const credentialsSaved = document.getElementById("credentialsSaved");
     const cancelCredsUpdate = document.getElementById("cancelCredsUpdate");
     const quickPicker = document.getElementById("quickPicker");
+    const mostRecentCase = document.getElementById("mostRecentCase");
+    var status = document.getElementById("status");
 
     let hasSetupCredentials = false;
 
-    const startWork = caseNumber => {
-      chrome.runtime.sendMessage({ action: "crStartWorkLast" }, function(
-        response
-      ) {
-        var workstatus = document.getElementById("crstartstopworkstatus");
-        workstatus.textContent = "Resuming work on previous case";
-      });
+    const startWorkOn = caseNumber => {
+      chrome.runtime.sendMessage(
+        { action: "crStartWorkOn", caseNumber: caseNumber.toString() },
+        response => {
+          updateStatus(`Started working on ${caseNumber}.`);
+          updateLastCaseOption(caseNumber);
+        }
+      );
+    };
+
+    const updateStatus = message => {
+      status.innerHTML = message;
+      setTimeout(() => (status.innerHTML = ""), 5000);
+    };
+
+    const statusError = message => {
+      updateStatus(
+        `<span style="color: red; font-weigh: bold;">${message}</span>`
+      );
     };
 
     stopWorkButton.addEventListener(
@@ -29,8 +43,7 @@ document.addEventListener(
         chrome.runtime.sendMessage({ action: "crStopAllWork" }, function(
           response
         ) {
-          var workstatus = document.getElementById("crstartstopworkstatus");
-          workstatus.textContent = "Stopping work on all cases";
+          updateStatus("Stopped work on all cases.");
         });
       },
       false
@@ -50,9 +63,9 @@ document.addEventListener(
         var fbApiToken = document.getElementById("crfbapitoken").value;
         var crApiUser = document.getElementById("crcrapiuser").value;
         var crApiPw = document.getElementById("crcrapipw").value;
-        var credstatus = document.getElementById("crsavecredsstatus");
 
         if (crApiUser && crApiPw) {
+          updateStatus("Authenticating...");
           crApi
             .authenticate(crApiUser, crApiPw)
             .then(ar => {
@@ -72,18 +85,22 @@ document.addEventListener(
                 });
               }
 
-              credstatus.textContent = "Credentials saved.";
+              updateStatus("Credentials saved.");
+              toggleCredentialsForm(false);
 
               return true;
             })
             .catch(x => {
-              credstatus.textContent = `Error trying to authenticate and/or store tokens - [${x}]`;
+              statusError(
+                `Error trying to authenticate and/or store tokens - [${x}]</span>`
+              );
               console.error(x);
               return false;
             });
         } else {
-          credstatus.textContent =
-            "Cannot update credentials - you must enter at least a CrApi user and pw.";
+          statusError(
+            "Cannot update credentials - you must enter at least a CrApi user and password."
+          );
         }
       },
       false
@@ -103,6 +120,32 @@ document.addEventListener(
       cancelCredsUpdate.style.display = hasSetupCredentials
         ? "initial"
         : "none";
+    };
+
+    const updateLastCaseOption = (caseNumber = null) => {
+      const updateOption = lastCaseNumber => {
+        lastCaseNumber = Number.parseInt(lastCaseNumber);
+        if (Number.isNaN(lastCaseNumber)) {
+          mostRecentCase.style.display = "none";
+        } else {
+          mostRecentCase.value = lastCaseNumber;
+          mostRecentCase.innerHTML = `Most Recent (${lastCaseNumber})`;
+          mostRecentCase.style.display = "initial";
+        }
+      };
+
+      if (caseNumber) {
+        updateOption(caseNumber);
+      } else {
+        chrome.storage.local.get(
+          {
+            lastCaseNumber: ""
+          },
+          response => {
+            updateOption(response.lastCaseNumber);
+          }
+        );
+      }
     };
 
     let quickPickOptions = [
@@ -133,8 +176,16 @@ document.addEventListener(
       });
 
       quickPicker.addEventListener("change", e => {
-        const selected = e.target.value;
+        const selected =
+            e.target.selectedOptions && e.target.selectedOptions[0],
+          selectedCase = Number.parseInt(selected.value);
+        if (!Number.isNaN(selectedCase) && selectedCase > 0) {
+          startWorkOn(selectedCase);
+          e.target.selectedIndex = 0;
+        }
       });
+
+      updateLastCaseOption();
     } catch (e) {
       console.error("Problem initializing FogMachine popup.", e);
     }

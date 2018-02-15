@@ -2,9 +2,7 @@
 <html>
 
 <head>
-	<title>FogMachine</title>
-	<script src="js/libs/forge0.7.1.js"></script>
-	<script src="js/libs/jquery3.2.1.js"></script>
+	<title>FogMachine Popup</title>
 	<script src="js/crapi.js"></script>
 	<script src="js/popup.js"></script>
 </head>
@@ -13,6 +11,7 @@
 		margin: 0;
 		min-width: 200px;
 		padding: 15px;
+		font-family: Arial, Helvetica, sans-serif;
 	}
 
 	.section {
@@ -29,6 +28,7 @@
 
 	.section .title {
 		font-weight: 600;
+		color: #666;
 	}
 
 	.sub-section {
@@ -48,19 +48,42 @@
 	#credentialsSaved {
 		display: none;
 	}
+
+	#settings {
+		cursor: pointer;
+		position: absolute;
+		top: 3px;
+		right: 9px;
+	}
+
+	#status {
+		border-top: solid .5px lightgray;
+		margin-top: 15px;
+		margin-bottom: -22px;
+		margin-left: -15px;
+		margin-right: -15px;
+		padding: 9px 8px 6px 8px;
+		font-size: 0.9em;
+		min-height: 14px;
+		color: #666;
+	}
 </style>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
 <body>
+	<div id="settings">
+		<i id="crsettings" class="fa fa-cog" title="Configure Settings"></i>
+	</div>
+
 	<div id="caseActions" class="section">
-		<div class="title">Quick Start</div>
+		<div class="title">Start Working On</div>
 		<select id="quickPicker">
 			<option value="0">Pick to Switch</option>
-			<option value "-1">Most Recent</option>
+			<option id="mostRecentCase" value "-1">Most Recent</option>
 		</select>
 		<div class="sub-section">
 			<a id="crstopwork" href="#">Stop Working</a>
 		</div>
-		<div id="crstartstopworkstatus"></div>
 	</div>
 
 	<div id="credentialsInputForm" class="section">
@@ -89,7 +112,6 @@
 			<button id="crauthsettings">Submit Credentials</button>
 			<a id="cancelCredsUpdate" href="#">Cancel</a>
 		</div>
-		<div id="crsavecredsstatus"></div>
 	</div>
 
 	<div id="credentialsSaved" class="section">
@@ -99,9 +121,7 @@
 		</div>
 	</div>
 
-	<div class="section">
-		<button id="crsettings">Settings</button>
-	</div>
+	<div id="status"></div>
 </body>
 
 </html>
