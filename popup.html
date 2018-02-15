@@ -1,35 +1,104 @@
 <!doctype html>
 <html>
-	<head>
-    	<title>FogMachine</title>
-    	<script src="js/libs/forge0.7.1.js"></script>
-    	<script src="js/libs/jquery3.2.1.js"></script>
-    	<script src="js/crapi.js"></script>
-    	<script src="js/popup.js"></script>
-  	</head>
-  	<body>
-		<div>
-    		<button id="crstopwork">Stop Work on All</button>
-    	</div>
 
-		<div>
-    		<button id="crstartworklast">Start Work on Last</button>
-    	</div>
-    	<div id="crstartstopworkstatus"></div>
-		<br/>
-		<br/>
+<head>
+	<title>FogMachine Popup</title>
+	<script src="js/crapi.js"></script>
+	<script src="js/popup.js"></script>
+</head>
+<style type="text/css">
+	body {
+		margin: 0;
+		min-width: 200px;
+		padding: 15px;
+		font-family: Arial, Helvetica, sans-serif;
+	}
 
-  		<div>
-			<label title="see http://help.fogcreek.com/8447 for information">
+	.section {
+		margin: 8px 0px 15px 0px;
+	}
+
+	body .section:first-child {
+		margin-top: 0px;
+	}
+
+	body .section:last-child {
+		margin-bottom: 0px;
+	}
+
+	.section .title {
+		font-weight: 600;
+		color: #666;
+	}
+
+	.sub-section {
+		margin-top: 8px;
+	}
+
+	select option {
+		-webkit-appearance: none;
+		padding: 5px;
+	}
+
+	#cancelCredsUpdate {
+		margin-left: 8px;
+		display: none;
+	}
+
+	#credentialsSaved {
+		display: none;
+	}
+
+	#settings {
+		cursor: pointer;
+		position: absolute;
+		top: 3px;
+		right: 9px;
+	}
+
+	#status {
+		border-top: solid .5px lightgray;
+		margin-top: 15px;
+		margin-bottom: -22px;
+		margin-left: -15px;
+		margin-right: -15px;
+		padding: 9px 8px 6px 8px;
+		font-size: 0.9em;
+		min-height: 14px;
+		color: #666;
+	}
+</style>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+<body>
+	<div id="settings">
+		<i id="crsettings" class="fa fa-cog" title="Configure Settings"></i>
+	</div>
+
+	<div id="caseActions" class="section">
+		<div class="title">Start Working On</div>
+		<select id="quickPicker">
+			<option value="0">Pick to Switch</option>
+			<option id="mostRecentCase" value "-1">Most Recent</option>
+		</select>
+		<div class="sub-section">
+			<a id="crstopwork" href="#">Stop Working</a>
+		</div>
+	</div>
+
+	<div id="credentialsInputForm" class="section">
+		<div>
+			<label>
 				FogBugz API Token
-			  	<input type="password" id="crfbapitoken">
+				<nobr>(<a href="http://help.fogcreek.com/8447" target="_blank">Info</a>)</nobr>
+				<input type="password" id="crfbapitoken">
 			</label>
 		</div>
 
 		<div>
 			<label title="NOT STORED - only needed if updating your FogBugz API Token above">
-			  	CrApi UserName
-			  	<input type="password" id="crcrapiuser">
+				CrApi UserName
+				<input type="password" id="crcrapiuser">
 			</label>
 		</div>
 
@@ -39,17 +108,20 @@
 				<input type="password" id="crcrapipw">
 			</label>
 		</div>
-
-		<br/>
 		<div>
 			<button id="crauthsettings">Submit Credentials</button>
+			<a id="cancelCredsUpdate" href="#">Cancel</a>
 		</div>
-		<div id="crsavecredsstatus"></div>
-		<br/>
-		<br/>
+	</div>
 
+	<div id="credentialsSaved" class="section">
+		<div>Your credentials are on file.</div>
 		<div>
-    		<button id="crsettings">Settings</button>
-    	</div>
-	</body>
-</html>	
+			<a id="updateCredsLink" href="#">Update Credentials</a>
+		</div>
+	</div>
+
+	<div id="status"></div>
+</body>
+
+</html>

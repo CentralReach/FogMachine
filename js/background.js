@@ -10,13 +10,18 @@ chrome.storage.sync.get(
 );
 
 chrome.runtime.onMessage.addListener(function(request, sender, response) {
-  if (request.action == "crStopAllWork") {
-    doStopWork(true);
-    response();
-  } else if (request.action == "crStartWorkLast") {
-    startWorkOnLastAsync();
-    response();
+  switch (request.action) {
+    case "crStopAllWork":
+      doStopWork(true);
+      break;
+    case "crStartWorkOn":
+      doUpdateWorkingOn(request.caseNumber, true, true);
+      break;
+    case "crStartWorkLast":
+      startWorkOnLastAsync();
+      break;
   }
+  response();
 });
 
 window.addEventListener(
