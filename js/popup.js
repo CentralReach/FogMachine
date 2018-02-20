@@ -161,7 +161,7 @@ document.addEventListener(
     // page init
     try {
       chrome.storage.local.get({ fbApiToken: "" }, t => {
-        if (t) {
+        if (t && t.fbApiToken) {
           // we have credentials stored
           hasSetupCredentials = true;
           toggleCredentialsForm(false);
