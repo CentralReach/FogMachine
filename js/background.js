@@ -191,7 +191,7 @@ function getCaseInfoFromUrls(tab, urls, callback) {
     callback(tab, caseInfo, urls);
   } else if (url.indexOf(urls.ghUrl) >= 0) {
     // GH url, that is all we do for these...
-    chrome.tabs.sendMessage(tab.id, { action: "crGetPrCommitRefs" }, function(
+    chrome.tabs.sendMessage(tab.id, { action: "crGetPrCommitRefs", fbUrl: urls.fbUrl }, function(
       ghPrCase
     ) {
       var ghCaseInfo = {
