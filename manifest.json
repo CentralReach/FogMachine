@@ -3,8 +3,7 @@
 
   "name": "FogMachine by CentralReach",
   "short_name": "FogMachine",
-  "description":
-    "Automated working-on (working schedule automation) and case management for FogBugz by CentralReach",
+  "description": "Automated working-on (working schedule automation) and case management for FogBugz by CentralReach",
   "manifest_version": 2,
 
   "icons": {
