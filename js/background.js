@@ -220,7 +220,7 @@ function getCaseInfoFromUrls(tab, urls, callback) {
 
     if (firstSegment) {
       // Find basically a case number in the first segment
-      var mrx = /[^0-9]*([0-9]+)[^0-9]*/;
+      var mrx = /[^0-9]*([0-9]{4,6})[^0-9]*/;
       var cnMatch = mrx.exec(firstSegment);
 
       if (cnMatch && cnMatch[1]) {

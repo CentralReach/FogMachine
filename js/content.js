@@ -3,7 +3,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, response) {
 	if (request.action == 'crGetPrCommitRefs') {
 		// Find basically a case number as part of a branch that occurrs after a / (i.e. hotfix/123-test, feature/testing123, etc.)
 		const fbLinkText = '(FogBugz Case)';
-		const mrx = /[a-zA-Z0-9].*\/[^0-9]*([0-9]+)[^0-9]*/;
+		const mrx = /[a-zA-Z0-9].*\/[^0-9]*([0-9]{4,6})[^0-9]*/;
 
 		var caseNumber = 0;
 		var haveFbLinks = false;
